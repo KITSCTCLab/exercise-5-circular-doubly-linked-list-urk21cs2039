@@ -1,134 +1,139 @@
-class Node:
-    def __init__(self, data=None):
+class node:
+    def _init_(self,data):
         self.data = data
-        self.previous = self
-        self.next = self
+        self.prev = None
+        self.next = None
 
-        
-
-class DoublyCircularLinkedList:
-    def __init__(self):
+class dlinkedlist:
+    def _init_(self):
         self.head = None
-        self.count = 0
 
-    def add_at_tail(self, data) -> bool:
-        new_node = Node(data)
-        if self.count > 0:
-            new_node.previous = self.end
-            self.end.next = new_node
-            self.head.previous = new_node
-            new_node.next = self.head
+    def is_empty(self):
+        return self.head == None
+    
+    def emptyprint(self):
+        print("The doubly linked list is empty")
+
+    def printllfoward(self):
+        if self.is_empty():
+            self.emptyprint()
         else:
+            n=self.head 
+            while n !=None:
+                print(n.data,end="-->")
+                n = n.next
+
+    def printllback(self):
+        if self.is_empty():
+            self.emptyprint()
+        n = self.head
+        while n.next is not None:
+            n = n.next
+        while n is not None:
+            print(n.data,end="--> ")
+            n = n.prev
+    def insert_empty(self,data):
+        if self.is_empty():
+            new_node = node(data)
             self.head = new_node
-        self.end = new_node
-        self.count += 1
-        return True
-
-    def add_at_head(self, data) -> bool:
-        new_node = Node(data)
-        if self.count > 0:
-            new_node.next = self.head
-            new_node.previous = self.end
-            self.head.previous = new_node
-            self.end.next = new_node
         else:
-            self.end = new_node
-        self.head = new_node
-        self.count += 1
-        return True
+            return
 
-    def add_at_index(self, index, data) -> bool:
-        if index < 0 or index >= self.count:
-            return False
-        if index == 0:
-            return self.add_at_head(data)
-        if index == self.count:
-            return self.add_at_tail(data)
-        new_node = Node(data)
-        curr_node = self.head
-        for i in range(index):
-            curr_node = curr_node.next
-        new_node.previous = curr_node.previous
-        new_node.next = curr_node
-        curr_node.previous.next = new_node
-        curr_node.previous = new_node
-        self.count += 1
-        return True
+    def add_beg(self,data):
+        if self.is_empty():
+            self.insert_empty(data)
+        else:
+            new_node = node(data)
+            new_node.next = self.head
+            self.head.prev = new_node
+            self.head = new_node
 
-    def get(self, index) -> int:
-        if index < 0 or index >= self.count:
-            return -1
-        curr_node = self.head
-        for i in range(index):
-            curr_node = curr_node.next
-        return curr_node.data
+    def add_end(self,data):
+        
+        if self.is_empty():
+            self.insert_empty(data)
+        else:
+            new_node = node(data)
+            n = self.head
+            while n.next is not None:
+                n = n.next
+            n.next = new_node
+            new_node.prev = n
 
-    def delete_at_index(self, index) -> bool:
-        if index < 0 or index >= self.count:
-            return False
-        if index == 0:
-            temp = self.head
-            temp.next.previous = self.end
-            self.end.next = temp.next
-            self.head = temp.next
-            self.count -= 1
-            return True
-        if index == self.count - 1:
-            temp = self.end
-            self.head.previous = temp.previous
-            temp.previous.next = self.head
-            self.end = temp.previous
-            self.count -= 1
-            return True
-
-        curr_node = self.head
-        for ind in range(index):
-            curr_node = curr_node.next
-        curr_node.previous.next = curr_node.next
-        curr_node.next.previous = curr_node.previous
-        self.count -= 1
-        return True
-
-    def get_previous_next(self, index) -> list:
-        if index < 0 or index >= self.count:
-            return -1
-        curr_node = self.head
-        for ind in range(index):
-            curr_node = curr_node.next
-        return [curr_node.previous.data, curr_node.next.data]
-
-
-# Do not change the following code
-operations = []
-for specific_operation in input().split(','):
-    operations.append(specific_operation.strip())
-input_data = input()
-data = []
-iteration_count = 0
-
-for item in input_data.split(', '):
-    inner_list = []
-    if item.isnumeric():
-        data.append(int(item))
-    elif item.startswith('['):
-        item = item[1:-1]
-        for letter in item.split(','):
-            if letter.isnumeric():
-                inner_list.append(int(letter))
-        data.append(inner_list)
-obj = DoublyCircularLinkedList()
-result = []
-for i in range(len(operations)):
-    if operations[i] == "add_at_head":
-        result.append(obj.add_at_head(data[i]))
-    elif operations[i] == "add_at_tail":
-        result.append(obj.add_at_tail(data[i]))
-    elif operations[i] == "add_at_index":
-        result.append(obj.add_at_index(int(data[i][0]), data[i][1]))
-    elif operations[i] == "get":
-        result.append(obj.get(data[i]))
-    elif operations[i] == "get_previous_next":
-        result.append(obj.get_previous_next(data[i]))
-    elif operations[i] == 'delete_at_index':
-        result.append(obj.delete_at_index(data[i]))
-print(result)
+    def add_inbetweenafter(self,data,x):
+        if self.is_empty():
+            self.insert_empty(data)
+        else:
+            n = self.head
+            while n is not None:
+                if x == n.data:
+                    break
+                else:
+                    n = n.next
+            if n is None:
+                print("Node is not present")
+            else:
+                new_node = node(data)
+                new_node.next = n.next
+                new_node.prev = n
+                if n.next is not None:
+                    n.next.prev = new_node
+                n.next = new_node
+                
+    def add_inbetweenbefore(self,data,x):
+        if self.is_empty():
+            self.insert_empty(data)
+        else:
+            n = self.head
+            while n is not None:
+                if x == n.data:
+                    break
+                else:
+                    n = n.next
+            if n is None:
+                print("Node is not present")
+            else:
+                new_node = node(data)
+                new_node.next = n
+                new_node.prev = n.prev
+                if n.prev is not None:
+                    n.prev.next = new_node
+                n.prev = new_node
+    def del_beg(self):
+        if self.is_empty():
+            self.emptyprint()
+        else:
+            self.head = self.head.next
+            self.head.prev = None
+    def del_end(self):
+        if self.is_empty():
+            self.emptyprint()
+        else:
+            n = self.head
+            while n.next is not None:
+                n = n.next
+            n.prev.next = None
+    def del_inbetween(self,x):
+        if self.is_empty():
+            self.emptyprint()
+        else:
+            n = self.head
+            while n is not None:
+                if x == n.data:
+                    break
+                else:
+                    n = n.next
+            if n is None:
+                print("Node is not present")
+            else:
+                n.prev.next = n.next
+                n.next.prev = n.prev
+ll = dlinkedlist()
+ll.add_beg(12)
+ll.add_beg(13)
+ll.add_inbetweenafter(20,13)
+ll.add_end(19)
+ll.printllback()
+print("\n")
+ll.del_inbetween(20)
+ll.printllfoward()
